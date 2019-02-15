@@ -9,6 +9,7 @@
   "author": "Julien Bloit",
   "license": "ISC",
   "dependencies": {
+    "easymidi": "^1.0.1",
     "express": "^4.15.2",
     "socket.io": "^2.2.0"
   }

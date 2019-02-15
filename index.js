@@ -2,6 +2,16 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var easymidi = require('easymidi');
+var input = new easymidi.Input('IAC Driver Bus 1');
+
+
+input.on('noteon', function (params) {
+  // do something with msg
+  console.log('NOTE ON ' + params['note']);
+});
+
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
   });
