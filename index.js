@@ -9,7 +9,7 @@ var midiInput = new easymidi.Input('IAC Driver Bus 1');
 midiInput.on('noteon', function (params) {
   // do something with msg
   console.log('NOTE ON ' + params['note']);
-  io.emit('chat message', params['note']);
+  io.emit('noteOn', params);
 });
 
 app.get('/', function(req, res){
