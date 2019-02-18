@@ -3,18 +3,15 @@
   <head>
     <title>Web Score</title>
 
-    <script src="/helpers.js" defer></script>
-    <script src="/script.js" defer></script>
-
   </head>
   <body>
     <button onclick="toggleAnimation()">Toggle</button>
-    <div id="element"></div>
-
+    <div id="rect"></div>
+    <canvas id="canvas"></canvas>
     
     <script src="/socket.io/socket.io.js"></script>
 
-
+    <script src="/helpers.js"></script>
 <script>
   /* requestAnimationFrame() */
   
@@ -27,23 +24,31 @@
   var stopId;
   var progress;
   var toggle = false;
+
+  const painter = new FloatyNotes();
   
-  var element = document.getElementById('element');
-  element.setAttribute("style", 
+  window.requestAnimationFrame(() => painter.drawLoop());
+
+  var rect = document.getElementById('rect');
+  rect.setAttribute("style", 
                        "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
 
   var socket = io();
     socket.on('chat message', function(msg){
       // console.log(msg);
       var pitch = parseInt(msg);
-      element.setAttribute("style", 
+
+      var buttonIndex = 0;
+      const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
+
+      rect.setAttribute("style", 
                        "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");  
     });
   
   function step(timestamp) {
     if (!start || progress > 400) start = timestamp;
     progress = (timestamp - start) / 10 + 50;
-    element.style.top = progress + 'px';
+    rect.style.top = progress + 'px';
     stopId = window.requestAnimationFrame(step);
   }
   

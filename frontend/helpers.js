@@ -22,7 +22,7 @@ const CONSTANTS = {
       this.canvas.height = this.contextHeight = window.innerHeight - whiteNoteHeight - 20;
     }
     
-    addNote(button, x, width) {
+    addNote(button=0, x, width) {
       const noteToPaint = {
           x: parseFloat(x),
           y: 0,
