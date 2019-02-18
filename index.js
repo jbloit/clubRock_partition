@@ -12,9 +12,16 @@ midiInput.on('noteon', function (params) {
   io.emit('chat message', 'NOTE ON ' + params['note']);
 });
 
-
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/frontend/index.html');
+  });
+
+  app.get('/helpers.js', function(req, res){
+    res.sendFile(__dirname + '/frontend/helpers.js');
+  });
+
+  app.get('/script.js', function(req, res){
+    res.sendFile(__dirname + '/frontend/script.js');
   });
 
 http.listen(3000, function(){
