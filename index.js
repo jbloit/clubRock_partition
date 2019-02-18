@@ -8,8 +8,18 @@ var midiInput = new easymidi.Input('IAC Driver Bus 1');
 
 midiInput.on('noteon', function (params) {
   // do something with msg
-  console.log('NOTE ON ' + params['note']);
-  io.emit('noteOn', params);
+  console.log('NOTE' + params['note'] + ' VEL ' + params['velocity']);
+  if (params['velocity'] == 0){
+    io.emit('noteOff', params);
+  } else {
+    io.emit('noteOn', params);
+  }
+});
+
+midiInput.on('noteoff', function (params) {
+  // do something with msg
+  console.log('--- NOTE OFF ' + params['note']);
+  io.emit('noteOff', params);
 });
 
 app.get('/', function(req, res){

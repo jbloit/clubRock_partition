@@ -27,11 +27,29 @@
 
   const painter = new FloatyNotes();
   
+  function onWindowResize() {
+
+  painter.resize(0);
+
+}
+
+
+  // Event listeners.
+  window.addEventListener('resize', onWindowResize);
+  window.addEventListener('orientationchange', onWindowResize);
+
+
+  // init
+  onWindowResize();
   window.requestAnimationFrame(() => painter.drawLoop());
 
   var rect = document.getElementById('rect');
   rect.setAttribute("style", 
                        "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
+
+
+
+  var noteToOff ;
 
   var socket = io();
     socket.on('noteOn', function(params){
@@ -41,10 +59,25 @@
       var buttonIndex = 0;
       const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
 
+
+      noteToOff = noteToPaint;
       rect.setAttribute("style", 
                        "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");  
     });
   
+    socket.on('noteOff', function(params){
+      // console.log(msg);
+      var pitch = params['note'];
+      
+      painter.stopNote(noteToOff);
+
+
+      console.log('NOTE OFF ' + pitch);
+      // var buttonIndex = 0;
+      // const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
+
+    });
+
   function step(timestamp) {
     if (!start || progress > 400) start = timestamp;
     progress = (timestamp - start) / 10 + 50;
