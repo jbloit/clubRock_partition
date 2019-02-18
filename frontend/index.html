@@ -25,6 +25,8 @@
   var progress;
   var toggle = false;
 
+
+  var onNotes = [];
   const painter = new FloatyNotes();
   
   function onWindowResize() {
@@ -48,19 +50,20 @@
                        "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
 
 
-
-  var noteToOff ;
-
   var socket = io();
     socket.on('noteOn', function(params){
       // console.log(msg);
+
+
       var pitch = params['note'];
 
-      var buttonIndex = 0;
-      const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
+      // this assumes pitch values are ints starting at 0.
+      var buttonIndex = pitch;
+      var noteWidth = 50;
+      const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
 
+      onNotes[pitch] = noteToPaint;
 
-      noteToOff = noteToPaint;
       rect.setAttribute("style", 
                        "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");  
     });
@@ -69,7 +72,7 @@
       // console.log(msg);
       var pitch = params['note'];
       
-      painter.stopNote(noteToOff);
+      painter.stopNote(onNotes[pitch]);
 
 
       console.log('NOTE OFF ' + pitch);

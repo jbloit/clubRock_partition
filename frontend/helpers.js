@@ -1,5 +1,6 @@
 const CONSTANTS = {
     COLORS : ['#EE2B29','#ff9800','#ffff00','#c6ff00','#00e5ff','#2979ff','#651fff','#d500f9'], 
+    MAXNOTES : 4,
   }
   
   /*************************
@@ -22,7 +23,7 @@ const CONSTANTS = {
       this.canvas.height = this.contextHeight = window.innerHeight - whiteNoteHeight - 20;
     }
     
-    addNote(button=0, x, width) {
+    addNote(button, x, width) {
       const noteToPaint = {
           x: parseFloat(x),
           y: 0,
