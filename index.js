@@ -8,7 +8,7 @@ var midiInput = new easymidi.Input('IAC Driver Bus 1');
 
 midiInput.on('noteon', function (params) {
   // do something with msg
-  console.log('NOTE' + params['note'] + ' VEL ' + params['velocity']);
+  // console.log('NOTE' + params['note'] + ' VEL ' + params['velocity']);
   if (params['velocity'] == 0){
     io.emit('noteOff', params);
   } else {
@@ -18,7 +18,7 @@ midiInput.on('noteon', function (params) {
 
 midiInput.on('noteoff', function (params) {
   // do something with msg
-  console.log('--- NOTE OFF ' + params['note']);
+  // console.log('--- NOTE OFF ' + params['note']);
   io.emit('noteOff', params);
 });
 
@@ -40,6 +40,7 @@ http.listen(3000, function(){
 
 io.on('connection', function(socket){
     console.log('a user connected');
+    console.log(socket.conn.transport.name);
     socket.on('disconnect', function(){
         console.log('user disconnected');
       });
