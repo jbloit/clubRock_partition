@@ -1,6 +1,8 @@
 var app = require('express')();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+
+const WebSocket = require('ws');
+const ws = new WebSocket('ws://192.168.1.22');
 
 var easymidi = require('easymidi');
 var midiInput = new easymidi.Input('IAC Driver Bus 1');
@@ -8,18 +10,21 @@ var midiInput = new easymidi.Input('IAC Driver Bus 1');
 
 midiInput.on('noteon', function (params) {
   // do something with msg
-  console.log('NOTE' + params['note'] + ' VEL ' + params['velocity']);
+  // console.log('NOTE' + params['note'] + ' VEL ' + params['velocity']);
+
+    
+
   if (params['velocity'] == 0){
-    io.emit('noteOff', params);
+    ws.send('noteOff', params);
   } else {
-    io.emit('noteOn', params);
+    ws.send('noteOn', params);
   }
 });
 
 midiInput.on('noteoff', function (params) {
   // do something with msg
   console.log('--- NOTE OFF ' + params['note']);
-  io.emit('noteOff', params);
+  ws.send('noteOff', params);
 });
 
 app.get('/', function(req, res){
@@ -38,13 +43,13 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-      });
-    socket.on('chat message', function(msg){
-        console.log('message: ' + msg);
-        io.emit('chat message', msg);
-      });
-});
+// io.on('connection', function(socket){
+//     console.log('a user connected');
+//     socket.on('disconnect', function(){
+//         console.log('user disconnected');
+//       });
+//     socket.on('chat message', function(msg){
+//         console.log('message: ' + msg);
+//         io.emit('chat message', msg);
+//       });
+// });
