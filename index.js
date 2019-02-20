@@ -1,55 +1,50 @@
-var app = require('express')();
-var http = require('http').Server(app);
+var express = require('express'),
+    WebSocket = require('ws'),
+    easymidi = require('easymidi');
 
-const WebSocket = require('ws');
-const ws = new WebSocket('ws://192.168.1.22');
 
-var easymidi = require('easymidi');
 var midiInput = new easymidi.Input('IAC Driver Bus 1');
 
-
-midiInput.on('noteon', function (params) {
-  // do something with msg
-  // console.log('NOTE' + params['note'] + ' VEL ' + params['velocity']);
-
-    
-
-  if (params['velocity'] == 0){
-    ws.send('noteOff', params);
-  } else {
-    ws.send('noteOn', params);
-  }
-});
-
-midiInput.on('noteoff', function (params) {
-  // do something with msg
-  console.log('--- NOTE OFF ' + params['note']);
-  ws.send('noteOff', params);
-});
-
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/frontend/index.html');
-  });
-
-  app.get('/helpers.js', function(req, res){
-    res.sendFile(__dirname + '/frontend/helpers.js');
-  });
-
-  app.get('/script.js', function(req, res){
-    res.sendFile(__dirname + '/frontend/script.js');
-  });
-
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-});
-
-// io.on('connection', function(socket){
-//     console.log('a user connected');
-//     socket.on('disconnect', function(){
-//         console.log('user disconnected');
-//       });
-//     socket.on('chat message', function(msg){
-//         console.log('message: ' + msg);
-//         io.emit('chat message', msg);
-//       });
+// midiInput.on('noteon', function (params) {
+//
+//   if (params['velocity'] == 0){
+//     ws.send('noteOff', params);
+//   } else {
+//     ws.send('noteOn', params);
+//   }
 // });
+//
+// midiInput.on('noteoff', function (params) {
+//   // do something with msg
+//   console.log('--- NOTE OFF ' + params['note']);
+//   ws.send('noteOff', params);
+// });
+
+
+
+
+
+var appResources = __dirname + "/frontend",
+    app = express(),
+    server = app.listen(8081),
+    wss = new WebSocket.Server({
+        server: server
+    });
+
+app.use("/", express.static(appResources));
+
+wss.on("connection", function (socket) {
+    console.log("A Web Socket connection has been established!");
+    socket.send('ho!');
+
+    midiInput.on('noteon', function (params) {
+      console.log('--- NOTE ON ' + params['note']);
+      socket.send(JSON.stringify(params));
+    });
+
+    midiInput.on('noteoff', function (params) {
+      console.log('--- NOTE OFF ' + params['note']);
+      socket.send(JSON.stringify(params));
+    });
+
+});

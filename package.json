@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "easymidi": "^1.0.1",
-    "express": "^4.15.2",
-    "ws": "5.1.1"
+    "ws": "^6.1.4",
+    "express": "^4.15.2"
   }
 }

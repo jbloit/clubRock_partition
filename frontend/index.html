@@ -1,50 +1,56 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Web Score</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 30%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>
-  </head>
-  <body>
-    <button onclick="toggleAnimation()">Toggle</button>
-    <div id="rect"></div>
-    <canvas id="canvas"></canvas><br>
-    <ul id="messages"></ul>
-    
-    <script src="/socket.io/socket.io.js"></script>
+<head>
+  <title>Web Score</title>
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font: 13px Helvetica, Arial; }
+  form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 30%; }
+  form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+  form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+  #messages { list-style-type: none; margin: 0; padding: 0; }
+  #messages li { padding: 5px 10px; }
+  #messages li:nth-child(odd) { background: #eee; }
+  </style>
+</head>
+<body>
+  <button onclick="toggleAnimation()">Toggle</button>
+  <div id="rect"></div>
+  <canvas id="canvas"></canvas><br>
+  <ul id="messages"></ul>
 
-    <script src="/helpers.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      var lastTime = Date.now();
-      $(function () {
-        var socket = io();
-        socket.on('noteOn', function(params){
-          var now = Date.now();
-          var deltaT = now - lastTime;
-          lastTime = now;
-          $('#messages').append($('<li>').text(deltaT));
 
-        });
-      });
-    </script>
+  <script src="/helpers.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+  var lastTime = Date.now();
+  $(function () {
+    const url = 'ws://192.168.1.22:8081'
+    const connection = new WebSocket(url)
 
-<script>
+    connection.onmessage = (e) => {
+      console.log("RECEIVED " + e.data)
+    }
+
+
+    // socket.on('noteOn', function(params){
+    //   var now = Date.now();
+    //   var deltaT = now - lastTime;
+    //   lastTime = now;
+    //   $('#messages').append($('<li>').text(deltaT));
+    //
+    // });
+  });
+  </script>
+
+  <!-- <script>
   /* requestAnimationFrame() */
-  
+
   // Benefits of reqestAnimationFrame:
   // * The browser can optimize it, so animations will be smoother
   // * Animations in inactive tabs will stop, allowing the CPU to chill
   // * More battery-friendly
-  
+
   var start;
   var stopId;
   var progress;
@@ -53,12 +59,10 @@
 
   var onNotes = [];
   const painter = new FloatyNotes();
-  
+
   function onWindowResize() {
-
-  painter.resize(0);
-
-}
+    painter.resize(0);
+  }
 
 
   // Event listeners.
@@ -71,48 +75,56 @@
   window.requestAnimationFrame(() => painter.drawLoop());
 
   var rect = document.getElementById('rect');
-  rect.setAttribute("style", 
-                       "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
+  rect.setAttribute("style",
+  "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
 
 
   var socket = io();
-    socket.on('noteOn', function(params){
-      // console.log(msg);
+  socket.on('noteOn', function(params){
+    // console.log(msg);
 
 
-      var pitch = params['note'];
+    var pitch = params['note'];
 
-      // this assumes pitch values are ints starting at 0.
-      var buttonIndex = pitch;
-      var noteWidth = 50;
-      const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
+    // this assumes pitch values are ints starting at 0.
+    var buttonIndex = pitch;
+    var noteWidth = 50;
+    const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
 
-      onNotes[pitch] = noteToPaint;
+    onNotes[pitch] = noteToPaint;
 
-      rect.setAttribute("style", 
-                       "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");  
-    });
-  
-    socket.on('noteOff', function(params){
-      // console.log(msg);
-      var pitch = params['note'];
-      
-      painter.stopNote(onNotes[pitch]);
+    rect.setAttribute("style",
+    "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");
+  });
+
+  socket.on('noteOff', function(params){
+    // console.log(msg);
+    var pitch = params['note'];
+
+    painter.stopNote(onNotes[pitch]);
 
 
-      console.log('NOTE OFF ' + pitch);
-      // var buttonIndex = 0;
-      // const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
+    console.log('NOTE OFF ' + pitch);
+    // var buttonIndex = 0;
+    // const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
 
-    });
+  });
 
+
+
+
+
+
+
+
+  /// DELETE THIS EVENTUALLY
   function step(timestamp) {
     if (!start || progress > 400) start = timestamp;
     progress = (timestamp - start) / 10 + 50;
     rect.style.top = progress + 'px';
     stopId = window.requestAnimationFrame(step);
   }
-  
+
   function toggleAnimation() {
     if (!toggle) {
       toggle = true;
@@ -122,9 +134,9 @@
       cancelAnimationFrame(stopId);
     }
   }
-  
-  </script>
+
+  </script> -->
 
 
-  </body>
+</body>
 </html>
