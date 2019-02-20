@@ -32,6 +32,7 @@ wss.on("connection", function (socket) {
     midiInput.on('noteoff', function (params) {
       console.log('--- NOTE OFF ' + params['note']);
       if(socket.readyState === WebSocket.OPEN){
+        params['velocity'] = 0;
         socket.send(JSON.stringify(params));
       };
     });

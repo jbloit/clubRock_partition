@@ -29,8 +29,10 @@
     const connection = new WebSocket(url)
 
     connection.onmessage = (e) => {
-      console.log("RECEIVED MIDI" + e.data);
-      // var midiEvent = JSON.parse(e.data);
+
+      var midiEvent = JSON.parse(e.data);
+
+      console.log("RECEIVED MIDI NOTE " + midiEvent['note'] + ' VEL ' + midiEvent['velocity']);
       var now = Date.now();
       var deltaT = now - lastTime;
       lastTime = now;
