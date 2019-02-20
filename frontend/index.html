@@ -29,17 +29,15 @@
     const connection = new WebSocket(url)
 
     connection.onmessage = (e) => {
-      console.log("RECEIVED " + e.data)
+      console.log("RECEIVED MIDI" + e.data);
+      // var midiEvent = JSON.parse(e.data);
+      var now = Date.now();
+      var deltaT = now - lastTime;
+      lastTime = now;
+      $('#messages').append($('<li>').text(deltaT));
+
     }
 
-
-    // socket.on('noteOn', function(params){
-    //   var now = Date.now();
-    //   var deltaT = now - lastTime;
-    //   lastTime = now;
-    //   $('#messages').append($('<li>').text(deltaT));
-    //
-    // });
   });
   </script>
 
