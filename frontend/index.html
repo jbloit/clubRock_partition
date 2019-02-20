@@ -14,48 +14,36 @@
   </style>
 </head>
 <body>
-  <button onclick="toggleAnimation()">Toggle</button>
-  <div id="rect"></div>
   <canvas id="canvas"></canvas><br>
   <ul id="messages"></ul>
 
 
   <script src="/helpers.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
   <script>
   var lastTime = Date.now();
-  $(function () {
-    const url = 'ws://192.168.1.22:8081'
-    const connection = new WebSocket(url)
 
-    connection.onmessage = (e) => {
+  const url = 'ws://192.168.1.22:8081'
+  const connection = new WebSocket(url)
+  //
+  // $(function () {
+  //   connection.onmessage = (e) => {
+  //
+  //     var midiEvent = JSON.parse(e.data);
+  //
+  //     console.log("RECEIVED MIDI NOTE " + midiEvent['note'] + ' VEL ' + midiEvent['velocity']);
+  //     var now = Date.now();
+  //     var deltaT = now - lastTime;
+  //     lastTime = now;
+  //     $('#messages').append($('<li>').text(deltaT));
+  //   }
+  // });
 
-      var midiEvent = JSON.parse(e.data);
-
-      console.log("RECEIVED MIDI NOTE " + midiEvent['note'] + ' VEL ' + midiEvent['velocity']);
-      var now = Date.now();
-      var deltaT = now - lastTime;
-      lastTime = now;
-      $('#messages').append($('<li>').text(deltaT));
-
-    }
-
-  });
-  </script>
-
-  <!-- <script>
-  /* requestAnimationFrame() */
-
-  // Benefits of reqestAnimationFrame:
-  // * The browser can optimize it, so animations will be smoother
-  // * Animations in inactive tabs will stop, allowing the CPU to chill
-  // * More battery-friendly
 
   var start;
   var stopId;
   var progress;
   var toggle = false;
-
 
   var onNotes = [];
   const painter = new FloatyNotes();
@@ -74,68 +62,55 @@
   onWindowResize();
   window.requestAnimationFrame(() => painter.drawLoop());
 
-  var rect = document.getElementById('rect');
-  rect.setAttribute("style",
-  "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
+  connection.onmessage = (e) => {
 
+    var midiEvent = JSON.parse(e.data);
 
-  var socket = io();
-  socket.on('noteOn', function(params){
-    // console.log(msg);
+    console.log("RECEIVED MIDI NOTE " + midiEvent['note'] + ' VEL ' + midiEvent['velocity']);
 
+    // NOTEON event
+    if (midiEvent['velocity'] > 0){
 
-    var pitch = params['note'];
+      var pitch = midiEvent['note'];
 
-    // this assumes pitch values are ints starting at 0.
-    var buttonIndex = pitch;
-    var noteWidth = 50;
-    const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
+      // this assumes pitch values are ints starting at 0.
+      var buttonIndex = pitch;
+      var noteWidth = 50;
+      const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
 
-    onNotes[pitch] = noteToPaint;
+      onNotes[pitch] = noteToPaint;
 
-    rect.setAttribute("style",
-    "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");
-  });
-
-  socket.on('noteOff', function(params){
-    // console.log(msg);
-    var pitch = params['note'];
-
-    painter.stopNote(onNotes[pitch]);
-
-
-    console.log('NOTE OFF ' + pitch);
-    // var buttonIndex = 0;
-    // const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
-
-  });
-
-
-
-
-
-
-
-
-  /// DELETE THIS EVENTUALLY
-  function step(timestamp) {
-    if (!start || progress > 400) start = timestamp;
-    progress = (timestamp - start) / 10 + 50;
-    rect.style.top = progress + 'px';
-    stopId = window.requestAnimationFrame(step);
-  }
-
-  function toggleAnimation() {
-    if (!toggle) {
-      toggle = true;
-      window.requestAnimationFrame(step);
+      rect.setAttribute("style",
+      "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");
     } else {
-      toggle = false;
-      cancelAnimationFrame(stopId);
+       // NOTEOFF event
+       var pitch = midiEvent['note'];
+
+       painter.stopNote(onNotes[pitch]);
+
+       console.log('NOTE OFF ' + pitch);
     }
   }
 
-  </script> -->
+  // /// DELETE THIS EVENTUALLY
+  // function step(timestamp) {
+  //   if (!start || progress > 400) start = timestamp;
+  //   progress = (timestamp - start) / 10 + 50;
+  //   rect.style.top = progress + 'px';
+  //   stopId = window.requestAnimationFrame(step);
+  // }
+  //
+  // function toggleAnimation() {
+  //   if (!toggle) {
+  //     toggle = true;
+  //     window.requestAnimationFrame(step);
+  //   } else {
+  //     toggle = false;
+  //     cancelAnimationFrame(stopId);
+  //   }
+  // }
+
+  </script>
 
 
 </body>
