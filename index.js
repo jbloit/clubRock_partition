@@ -22,6 +22,21 @@ midiInput.on('noteoff', function (params) {
   io.emit('noteOff', params);
 });
 
+
+// Compute BPM from beat clock (if available)
+var bpm = 60.0;
+var prevDate = Date.now() ;
+var now = Date.now();
+var deltaT = now-prevDate;
+var ppq = 24; // pulses per quarter note, standard for midi clock.
+midiInput.on('clock', function (params) {
+   now = Date.now();
+   deltaT = now - prevDate;
+   prevDate = now;
+  bpm = 60000 / (deltaT * ppq);
+  console.log('===== CLOCK -> BPM_T = ' +  bpm);
+});
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/frontend/index.html');
   });
