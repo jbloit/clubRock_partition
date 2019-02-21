@@ -61,7 +61,7 @@ class FloatyNotes {
   }
 
   drawLoop() {
-    const dy = 3;
+    const dy = 0.005 * this.contextHeight ;
     this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     this.endLineY = this.endLinePosition * this.contextHeight;
