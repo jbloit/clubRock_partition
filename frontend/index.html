@@ -5,6 +5,7 @@
 
   </head>
   <body>
+    <h1 id="frame_count"></h1>
     <button onclick="toggleAnimation()">Toggle</button>
     <div id="rect"></div>
     <canvas id="canvas"></canvas>
@@ -82,7 +83,7 @@
       painter.stopNote(onNotes[pitch]);
 
 
-      console.log('NOTE OFF ' + pitch);
+      //console.log('NOTE OFF ' + pitch);
       // var buttonIndex = 0;
       // const noteToPaint = painter.addNote(buttonIndex, pitch, 50);
 

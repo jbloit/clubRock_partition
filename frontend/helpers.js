@@ -7,6 +7,9 @@ const CONSTANTS = {
 /*************************
  * Floaty notes
  ************************/
+
+var $ = document.querySelector.bind(document);
+
 class FloatyNotes {
   constructor() {
     this.notes = [];  // the notes floating on the screen.
@@ -23,6 +26,15 @@ class FloatyNotes {
 
     this.endLinePosition = 0.8; // height pct
     this.endLineY = 0; // end line y
+
+
+    // Control frame rate
+    this.fps = 30; //default seems to be 60
+    this.interval = 1000 / this.fps;
+    this.now = Date.now();
+    this.then = 0;
+    this.delta = 0;
+
   }
 
   resize(whiteNoteHeight) {
@@ -61,65 +73,78 @@ class FloatyNotes {
   }
 
   drawLoop() {
-    const dy = 0.005 * this.contextHeight ;
-    this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    this.endLineY = this.endLinePosition * this.contextHeight;
-
-    // Remove all the notes that will be off the page;
-    this.notes = this.notes.filter((note) => note.on || note.y < (this.endLineY));
-
-    // Remove all the beats that will be off the page;
-    this.beats = this.beats.filter((beat) => beat.y < (this.endLineY));
-
-    // Advance all the notes.
-    for (let i = 0; i < this.notes.length; i++) {
-      const note = this.notes[i];
-
-      // If the note is still on, then its height goes up but it
-      // doesn't start sliding down yet.
-      if (note.on) {
-        note.height += dy;
-      } else {
-        note.y += dy;
-      }
-
-      // this.context.globalAlpha = note.y / this.contextHeight ;
-      this.context.fillStyle = note.color;
-
-      // if note touches end line
-      if (note.y + note.height >= this.endLineY){
-        this.context.fillRect(note.x - 5, note.y, note.width + 10, note.height);
-      } else {
-        this.context.fillRect(note.x, note.y, note.width, note.height);
-      }
-    
-    }
-
-    // Advance all the beats.
-    for (let i = 0; i < this.beats.length; i++) {
-      const beat = this.beats[i];
-      beat.y += dy;
-
-      // draw beat line
-      this.context.stroke.color = CONSTANTS.BEATCOLOR;
-      this.context.lineWidth = 2;
-      this.context.beginPath();
-      this.context.moveTo(0, beat.y);
-      this.context.lineTo(this.contextWidth, beat.y);
-      this.context.stroke();
-    }
-
-    // draw end line
-    this.context.stroke.color = CONSTANTS.BEATCOLOR;
-    this.context.lineWidth = 7;
-    this.context.beginPath();
-    this.context.moveTo(0, this.endLinePosition * this.contextHeight);
-    this.context.lineTo(this.contextWidth, this.endLineY);
-    this.context.stroke();
 
 
     window.requestAnimationFrame(() => this.drawLoop());
+
+
+    // control the frame rate (http://codetheory.in/controlling-the-frame-rate-with-requestanimationframe/)
+    this.now = Date.now();
+    this.delta = this.now - this.then;
+    if (this.delta > this.interval) {
+
+      this.then = this.now - (this.delta % this.interval);
+
+      $('#frame_count').innerHTML = 'interval ' + this.delta;
+
+      const dy = 0.005 * this.contextHeight;
+      this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      this.endLineY = this.endLinePosition * this.contextHeight;
+
+      // Remove all the notes that will be off the page;
+      this.notes = this.notes.filter((note) => note.on || note.y < (this.endLineY));
+
+      // Remove all the beats that will be off the page;
+      this.beats = this.beats.filter((beat) => beat.y < (this.endLineY));
+
+      // Advance all the notes.
+      for (let i = 0; i < this.notes.length; i++) {
+        const note = this.notes[i];
+
+        // If the note is still on, then its height goes up but it
+        // doesn't start sliding down yet.
+        if (note.on) {
+          note.height += dy;
+        } else {
+          note.y += dy;
+        }
+
+        // this.context.globalAlpha = note.y / this.contextHeight ;
+        this.context.fillStyle = note.color;
+
+        // if note touches end line
+        if (note.y + note.height >= this.endLineY) {
+          this.context.fillRect(note.x - 5, note.y, note.width + 10, note.height);
+        } else {
+          this.context.fillRect(note.x, note.y, note.width, note.height);
+        }
+
+      }
+
+      // Advance all the beats.
+      for (let i = 0; i < this.beats.length; i++) {
+        const beat = this.beats[i];
+        beat.y += dy;
+
+        // draw beat line
+        this.context.stroke.color = CONSTANTS.BEATCOLOR;
+        this.context.lineWidth = 2;
+        this.context.beginPath();
+        this.context.moveTo(0, beat.y);
+        this.context.lineTo(this.contextWidth, beat.y);
+        this.context.stroke();
+      }
+
+      // draw end line
+      this.context.stroke.color = CONSTANTS.BEATCOLOR;
+      this.context.lineWidth = 7;
+      this.context.beginPath();
+      this.context.moveTo(0, this.endLinePosition * this.contextHeight);
+      this.context.lineTo(this.contextWidth, this.endLineY);
+      this.context.stroke();
+
+    }
   }
 }
 
