@@ -34,7 +34,12 @@ class FloatyNotes {
     this.now = Date.now();
     this.then = 0;
     this.delta = 0;
+    this.beatDuration = 1.0; //default value
 
+  }
+
+  setBpm(newBpm){
+    this.beatDuration = 60.0 / newBpm;
   }
 
   resize(whiteNoteHeight) {
@@ -88,7 +93,7 @@ class FloatyNotes {
       $('#frame_count').innerHTML = 'interval ' + this.delta;
 
       
-      const barDuration = 4.0 // default to 4/4 at 60 bpm for now
+      const barDuration = 4.0 * this.beatDuration; // default to 4/4 time signature
       const framesInbar = barDuration * this.fps;
       const dy = this.contextHeight * this.endLinePosition / framesInbar;
       this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);

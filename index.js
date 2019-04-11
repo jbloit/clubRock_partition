@@ -46,6 +46,7 @@ midiInput.on('clock', function (params) {
   bpm = 60000 / (deltaT * ppq);
   if (Math.abs(bpm - prevBpm) > 2) {
     // console.log('===== BPM CHANGE  = ' + bpm);
+    io.emit('bpmChange', bpm);
   }
   prevBpm = bpm;
 

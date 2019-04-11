@@ -89,6 +89,10 @@
 
     });
 
+    socket.on('bpmChange', function(newBpm){
+      painter.setBpm(newBpm);
+    });
+
   function step(timestamp) {
     if (!start || progress > 400) start = timestamp;
     progress = (timestamp - start) / 10 + 50;
