@@ -87,7 +87,10 @@ class FloatyNotes {
 
       $('#frame_count').innerHTML = 'interval ' + this.delta;
 
-      const dy = 0.005 * this.contextHeight;
+      
+      const barDuration = 4.0 // default to 4/4 at 60 bpm for now
+      const framesInbar = barDuration * this.fps;
+      const dy = this.contextHeight * this.endLinePosition / framesInbar;
       this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       this.endLineY = this.endLinePosition * this.contextHeight;
