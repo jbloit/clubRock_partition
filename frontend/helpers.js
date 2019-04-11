@@ -89,9 +89,6 @@ class FloatyNotes {
     if (this.delta > this.interval) {
 
       this.then = this.now - (this.delta % this.interval);
-
-      $('#frame_count').innerHTML = 'interval ' + this.delta;
-
       
       const barDuration = 4.0 * this.beatDuration; // default to 4/4 time signature
       const framesInbar = barDuration * this.fps;
