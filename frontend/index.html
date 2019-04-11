@@ -1,87 +1,95 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Web Score</title>
 
-  </head>
-  <body>
-    <h1 id="frame_count"></h1>
-    <button onclick="toggleAnimation()">Toggle</button>
-    <div id="rect"></div>
-    <canvas id="canvas"></canvas>
-    
-    <script src="/socket.io/socket.io.js"></script>
+<head>
+  <title>Web Score</title>
 
-    <script src="/helpers.js"></script>
-<script>
-  /* requestAnimationFrame() */
-  
-  // Benefits of reqestAnimationFrame:
-  // * The browser can optimize it, so animations will be smoother
-  // * Animations in inactive tabs will stop, allowing the CPU to chill
-  // * More battery-friendly
-  
-  var start;
-  var stopId;
-  var progress;
-  var toggle = false;
+</head>
 
+<body>
+  <h1 id="frame_count"></h1>
+  <button onclick="toggleAnimation()">Toggle</button>
+  <div id="rect"></div>
+  <canvas id="canvas"></canvas>
 
-  var onNotes = [];
-  const painter = new FloatyNotes();
-  
-  function onWindowResize() {
+  <script src="/socket.io/socket.io.js"></script>
 
-  painter.resize(0);
+  <script src="/helpers.js"></script>
+  <script>
+    /* requestAnimationFrame() */
 
-}
+    // Benefits of reqestAnimationFrame:
+    // * The browser can optimize it, so animations will be smoother
+    // * Animations in inactive tabs will stop, allowing the CPU to chill
+    // * More battery-friendly
 
+    var start;
+    var stopId;
+    var progress;
+    var toggle = false;
 
-  // Event listeners.
-  window.addEventListener('resize', onWindowResize);
-  window.addEventListener('orientationchange', onWindowResize);
+    var onNotes = [];
+    const painter = new FloatyNotes();
+
+    // get the midi channel as a GET parameter of the URL, like this http://localhost:3000/?channel=1
+    var midiChannel = location.search.split('channel=')[1] - 1;
+
+    function onWindowResize() {
+      painter.resize(0);
+    }
 
 
-  // init
-  onWindowResize();
-  window.requestAnimationFrame(() => painter.drawLoop());
-
-  var rect = document.getElementById('rect');
-  rect.setAttribute("style", 
-                       "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
+    // Event listeners.
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('orientationchange', onWindowResize);
 
 
+    // init
+    onWindowResize();
+    window.requestAnimationFrame(() => painter.drawLoop());
 
+    var rect = document.getElementById('rect');
+    rect.setAttribute("style",
+      "background: blue; position: absolute; width: 50px; height: 50px; top: 50px;");
 
-  var socket = io();
+    var socket = io();
 
-    socket.on('beat', function(params){
+    socket.on('beat', function (params) {
       painter.addBeat();
     });
 
-    socket.on('noteOn', function(params){
+    socket.on('noteOn', function (params) {
       // console.log(msg);
 
 
       var pitch = params['note'];
+      var channel = params['channel'];
 
-      // this assumes pitch values are ints starting at 0.
-      var buttonIndex = pitch;
-      var noteWidth = 50;
-      const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
+      if (typeof (midiChannel) != undefined) {
+        if (midiChannel == channel) {
+          // this assumes pitch values are ints starting at 0.
+          var buttonIndex = pitch;
+          var noteWidth = 50;
+          const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
 
-      onNotes[pitch] = noteToPaint;
-
-      rect.setAttribute("style", 
-                       "background: blue; position: absolute; width: " + pitch +"px; height: " + pitch + "px; top: 50px;");  
+          onNotes[pitch] = noteToPaint;
+          rect.setAttribute("style",
+            "background: blue; position: absolute; width: " + pitch + "px; height: " + pitch + "px; top: 50px;");
+        }
+      }
     });
-  
-    socket.on('noteOff', function(params){
+
+    socket.on('noteOff', function (params) {
       // console.log(msg);
       var pitch = params['note'];
-      
-      painter.stopNote(onNotes[pitch]);
 
+      var channel = params['channel'];
+
+      if (typeof (midiChannel) != undefined) {
+        if (midiChannel == channel) {
+          painter.stopNote(onNotes[pitch]);
+        }
+      }
 
       //console.log('NOTE OFF ' + pitch);
       // var buttonIndex = 0;
@@ -89,29 +97,30 @@
 
     });
 
-    socket.on('bpmChange', function(newBpm){
+    socket.on('bpmChange', function (newBpm) {
       painter.setBpm(newBpm);
     });
 
-  function step(timestamp) {
-    if (!start || progress > 400) start = timestamp;
-    progress = (timestamp - start) / 10 + 50;
-    rect.style.top = progress + 'px';
-    stopId = window.requestAnimationFrame(step);
-  }
-  
-  function toggleAnimation() {
-    if (!toggle) {
-      toggle = true;
-      window.requestAnimationFrame(step);
-    } else {
-      toggle = false;
-      cancelAnimationFrame(stopId);
+    function step(timestamp) {
+      if (!start || progress > 400) start = timestamp;
+      progress = (timestamp - start) / 10 + 50;
+      rect.style.top = progress + 'px';
+      stopId = window.requestAnimationFrame(step);
     }
-  }
-  
+
+    function toggleAnimation() {
+      if (!toggle) {
+        toggle = true;
+        window.requestAnimationFrame(step);
+      } else {
+        toggle = false;
+        cancelAnimationFrame(stopId);
+      }
+    }
+
   </script>
 
 
-  </body>
+</body>
+
 </html>
