@@ -138,7 +138,7 @@ class FloatyNotes {
 
         // draw beat line
         this.context.stroke.color = CONSTANTS.BEATCOLOR;
-        this.context.lineWidth = 2;
+        this.context.lineWidth = 0.5;
         this.context.beginPath();
         this.context.moveTo(0, beat.y);
         this.context.lineTo(this.contextWidth, beat.y);
