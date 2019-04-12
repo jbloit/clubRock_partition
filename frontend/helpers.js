@@ -47,13 +47,14 @@ class FloatyNotes {
     this.canvas.height = this.contextHeight = window.innerHeight - whiteNoteHeight - 20;
   }
 
-  addNote(button, x, width) {
+  addNote(pitch) {
+    // pitch = MIDI note starting at 0
     const noteToPaint = {
-      x: parseFloat(x),
+      x: this.canvas.width / CONSTANTS.MAXNOTES * pitch,
       y: 0,
-      width: parseFloat(width),
+      width: this.canvas.width / CONSTANTS.MAXNOTES,
       height: 0,
-      color: CONSTANTS.COLORS[button],
+      color: CONSTANTS.COLORS[pitch],
       on: true
     };
     this.notes.push(noteToPaint);
@@ -90,9 +91,12 @@ class FloatyNotes {
 
       this.then = this.now - (this.delta % this.interval);
       
+      // Display speed syncs with BPM: show 4 beats between top and play bar (aka "endLine").
       const barDuration = 4.0 * this.beatDuration; // default to 4/4 time signature
       const framesInbar = barDuration * this.fps;
-      const dy = this.contextHeight * this.endLinePosition / framesInbar;
+      const dy = this.contextHeight * this.endLinePosition / framesInbar; // speed
+
+      // draw
       this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       this.endLineY = this.endLinePosition * this.contextHeight;
@@ -120,7 +124,7 @@ class FloatyNotes {
 
         // if note touches end line
         if (note.y + note.height >= this.endLineY) {
-          this.context.fillRect(note.x - 5, note.y, note.width + 10, note.height);
+          this.context.fillRect(note.x - 10, note.y, note.width + 20, note.height);
         } else {
           this.context.fillRect(note.x, note.y, note.width, note.height);
         }

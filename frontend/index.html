@@ -62,10 +62,7 @@
       if (typeof (midiChannel) != undefined) {
         if (midiChannel == channel) {
           // this assumes pitch values are ints starting at 0.
-          var buttonIndex = pitch;
-          var noteWidth = 50;
-          const noteToPaint = painter.addNote(buttonIndex, pitch * noteWidth, noteWidth);
-
+          const noteToPaint = painter.addNote(pitch);
           onNotes[pitch] = noteToPaint;
         }
       }
