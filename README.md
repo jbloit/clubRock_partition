@@ -1,8 +1,8 @@
 # WebScore
 
-Displays notes from a MIDI stream in a web browser.  
+Display notes from a MIDI stream in a web browser. Notes scroll vertically and touch a play bar at the bottom of the screen when the notes should be played.
 
-The display speed is computed such that 
+The display speed is computed such that 4 beats are displayed between the top of the screen and the playbar.
 
 # Installation
 
