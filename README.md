@@ -20,7 +20,7 @@ cd webScore
 npm install
 ```
 
-# Run it
+# Execution
 
 ## On the server:
 
