@@ -9,7 +9,7 @@ The display speed is computed such that 4 beats are displayed between the top of
 ## Requirements
 
 - The web server is a node.js program. So, you need to install node.js
-- a MIDI source: 
+- a MIDI source (could be a hardware controller, or a DAW etc...)
 
 ## Install dependencies
 
