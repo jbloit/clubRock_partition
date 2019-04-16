@@ -29,7 +29,7 @@ cd webScore
 node index.js
 ```
 
-Make sure the server islistening on the correct MIDI port. By default this is IAC Driver, Bus 1. Edit this in index.js if needed.
+Make sure the server is listening on the correct MIDI port. By default this is IAC Driver, Bus 1. Edit this in index.js if needed.
 
 The current BPM is derived from a MIDI sync clock signal. In Ableton Live you can activate the Sync toggle for your MIDI source in the MIDI pane of the preferences window.
 
@@ -45,3 +45,50 @@ Then open a web browser at
 ```
 Change the channel parameter according to the MIDI channel you want to display. 
 Channel 16 is reserved for the horizontal beat markers.
+
+# Setup @LaPetiteFabrique
+
+## Server 
+
+Machine = Lenovo T410, Windows 7
+Installed:
+- Saved this repository to Users\User\Documents\webScore
+- AbletonLive
+- Node.js
+Npm Install complained so I installed:
+- Python 2.7 (ticked all options in the installer, including adding python.exe to the PATH)
+- Visual Studio Express 2013 (as recommended in [this article](https://blog.lesieur.name/installer-tous-les-modules-npm-node-js-sous-windows/) ) 
+*~4GB to download... be patient*
+
+- [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
+
+
+
+
+## Clients
+
+- RPI 3B+
+- OS: raspbian
+- HDMI to VGA adapters
+
+### Config
+
+- for the HDMI to VGA adapter: 
+
+In */boot/config.txt*, uncomment the following:
+```
+hdmi_safe=1
+hdmi_force_hotplug=1
+```
+
+- for launching the chromium browser when the RaspberryPi is booted:
+
+edit */etc/xdg/lxsession/LXDE-pi/autostart* (set the channel number between 1 and 4, corresponding to the screen index to be displayed).
+
+```
+@xset s off
+@xset -dpms
+@xset s noblank
+
+@chromium-browser --noerrdialogs --kiosk localhost:3000/?channel=1
+```
