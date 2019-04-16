@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 var easymidi = require('easymidi');
-var midiInput = new easymidi.Input('IAC Driver Bus 1');
+var midiInput = new easymidi.Input('midiloop 0');
 
 
 midiInput.on('noteon', function (params) {
