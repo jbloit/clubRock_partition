@@ -29,7 +29,7 @@ cd webScore
 node index.js
 ```
 
-Make sure the server is listening on the correct MIDI port. By default this is IAC Driver, Bus 1. Edit this in index.js if needed.
+Make sure the server is listening on the correct MIDI port. By default this is set to *midiloop 0*. Edit this in index.js if you need to connect to another MIDI port.
 
 The current BPM is derived from a MIDI sync clock signal. In Ableton Live you can activate the Sync toggle for your MIDI source in the MIDI pane of the preferences window.
 
@@ -59,9 +59,9 @@ Npm Install complained so I installed:
 - Python 2.7 (ticked all options in the installer, including adding python.exe to the PATH)
 - Visual Studio 2019 (not evertything: the .NET SDK, MSBuild and git)
 
-- [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
+- [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html): added a midi port called "midiloop".
 
-
+- set fixed IP (with [this guide](https://kb.netgear.com/27476/How-do-I-set-a-static-IP-address-in-Windows)) with value: *169.254.4.230*
 
 
 ## Clients
@@ -89,5 +89,5 @@ edit */etc/xdg/lxsession/LXDE-pi/autostart* (set the channel number between 1 an
 @xset -dpms
 @xset s noblank
 
-@chromium-browser --noerrdialogs --kiosk localhost:3000/?channel=1
+@chromium-browser --noerrdialogs --kiosk 169.254.4.230:3000/?channel=1
 ```
