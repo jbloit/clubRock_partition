@@ -57,8 +57,7 @@ Installed:
 - Node.js
 Npm Install complained so I installed:
 - Python 2.7 (ticked all options in the installer, including adding python.exe to the PATH)
-- Visual Studio Express 2013 (as recommended in [this article](https://blog.lesieur.name/installer-tous-les-modules-npm-node-js-sous-windows/) ) 
-*~4GB to download... be patient*
+- Visual Studio 2019 (not evertything: the .NET SDK, MSBuild and git)
 
 - [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
 
