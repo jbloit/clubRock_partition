@@ -16,7 +16,7 @@ The display speed is computed such that 4 beats are displayed between the top of
 Make sure you have an internet connection and run:
 
 ```
-cd webScore
+cd clubRock_partition
 npm install
 ```
 
@@ -25,7 +25,7 @@ npm install
 ## On the server:
 
 ```
-cd webScore
+cd clubRock_partition
 node index.js
 ```
 
@@ -52,7 +52,7 @@ Channel 16 is reserved for the horizontal beat markers.
 
 Machine = Lenovo T410, Windows 7
 Installed:
-- Saved this repository to Users\User\Documents\webScore
+- Saved this repository to Users\User\Documents\clubRock_partition
 - AbletonLive
 - Node.js
 Npm Install complained so I installed:
