@@ -1,4 +1,4 @@
-# WebScore
+# clubRock_partition
 
 Display notes from a MIDI stream in a web browser. Notes scroll vertically and touch a play bar at the bottom of the screen when the notes should be played.
 
