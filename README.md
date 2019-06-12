@@ -46,7 +46,7 @@ Then open a web browser at
 Change the channel parameter according to the MIDI channel you want to display. 
 Channel 16 is reserved for the horizontal beat markers.
 
-# Setup @LaPetiteFabrique
+# Setup for exhibition
 
 ## Server 
 
